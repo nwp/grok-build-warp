@@ -1,0 +1,72 @@
+{
+  "description": "Warp terminal notifications for Grok Build",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${GROK_PLUGIN_ROOT}/scripts/on-session-start.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${GROK_PLUGIN_ROOT}/scripts/on-prompt-submit.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${GROK_PLUGIN_ROOT}/scripts/on-stop.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${GROK_PLUGIN_ROOT}/scripts/on-stop-failure.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${GROK_PLUGIN_ROOT}/scripts/on-post-tool-use.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${GROK_PLUGIN_ROOT}/scripts/on-notification.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

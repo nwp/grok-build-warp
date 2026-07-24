@@ -1,0 +1,10 @@
+{
+  "name": "warp",
+  "version": "1.0.0",
+  "description": "Warp terminal integration for SpaceXAI Grok Build — structured notifications and session status",
+  "author": {
+    "name": "Warp",
+    "url": "https://warp.dev"
+  },
+  "homepage": "https://github.com/warpdotdev/grok-build-warp"
+}
