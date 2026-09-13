@@ -1,0 +1,23 @@
+{
+  "name": "grok-build-warp",
+  "description": "Warp terminal integration for SpaceXAI Grok Build",
+  "owner": {
+    "name": "Nathan Phelps",
+    "url": "https://github.com/nwp"
+  },
+  "plugins": [
+    {
+      "name": "warp",
+      "description": "Warp terminal integration for SpaceXAI Grok Build — structured notifications and session status",
+      "version": "1.0.0",
+      "category": "productivity",
+      "source": {
+        "type": "local",
+        "path": "./plugins/warp"
+      },
+      "homepage": "https://github.com/nwp/grok-build-warp",
+      "tags": ["notifications", "terminal", "warp"],
+      "keywords": ["warp", "notifications", "terminal"]
+    }
+  ]
+}

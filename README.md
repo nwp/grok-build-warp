@@ -1,8 +1,8 @@
 # Grok Build + Warp
 
-Official [Warp](https://warp.dev) terminal integration for **SpaceXAI** [Grok Build](https://x.ai) (`grok`).
+[Warp](https://warp.dev) terminal integration for **SpaceXAI** [Grok Build](https://x.ai) (`grok`).
 
-This repository is intentionally small and Claude-plugin–shaped so Warp can fork or adopt it as the official Grok Build notification plugin with minimal changes.
+Published today from [`nwp/grok-build-warp`](https://github.com/nwp/grok-build-warp) (Nathan Phelps). The repo is intentionally Claude-plugin–shaped so Warp can fork or adopt it later as `warpdotdev/grok-build-warp` with a homepage/author retarget.
 
 ## Features
 
@@ -30,25 +30,40 @@ Structured events keep Warp’s session UI in sync:
 
 ## Installation
 
-```bash
-# Official (after published under warpdotdev)
-grok plugin install warpdotdev/grok-build-warp#plugins/warp --trust
+### Marketplace (recommended)
 
-# Local checkout
+```bash
+grok plugin marketplace add nwp/grok-build-warp
+grok plugin install warp --trust
+```
+
+### Local checkout
+
+```bash
+git clone https://github.com/nwp/grok-build-warp.git
+cd grok-build-warp
+grok plugin validate plugins/warp
 grok plugin install ./plugins/warp --trust
 ```
 
-After install, **restart Grok Build** (exit and run `grok` again) so hooks load.
+The installable unit is `plugins/warp` (plugin id `warp`). After install, **restart Grok Build** (exit and run `grok` again) so hooks load.
 
 ```bash
 grok plugin list
 grok plugin details warp
 ```
 
+Direct GitHub install of the plugin subdirectory also works:
+
+```bash
+grok plugin install nwp/grok-build-warp#plugins/warp --trust
+```
+
 ## Uninstall
 
 ```bash
 grok plugin uninstall warp --confirm
+grok plugin marketplace remove grok-build-warp
 ```
 
 ### Remove legacy Warp file-write hooks
@@ -91,28 +106,34 @@ Hook stdin accepts **camelCase** (Grok) and **snake_case** (compat).
 ## Layout
 
 ```text
-plugins/warp/           # installable unit (name: warp)
+.grok-plugin/marketplace.json          # Grok catalog (name: grok-build-warp)
+.claude-plugin/marketplace.json        # Warp/Claude twin of the same catalog
+plugins/warp/                          # installable unit (name: warp)
   plugin.json
   hooks/hooks.json
-  scripts/              # OSC builders + per-hook handlers
+  scripts/                             # OSC builders + per-hook handlers
   tests/test-hooks.sh
 ```
 
-Same monorepo shape as [claude-code-warp](https://github.com/warpdotdev/claude-code-warp): one installable plugin under `plugins/warp`. No marketplace index, Oz skills, or extra packaging required for v1.
+Same monorepo shape as [claude-code-warp](https://github.com/warpdotdev/claude-code-warp). Grok prefers `.grok-plugin/marketplace.json` and then falls back to `.claude-plugin/`. Plugin manifests are probed as `plugin.json`, then `.grok-plugin/plugin.json`, then `.claude-plugin/plugin.json`. No `plugin-index.json` generator — Grok does not require one for a single-plugin self-hosted catalog.
+
+The catalog lists `warp` as a **local** source. Grok 1.0.30 accepts both `{ "type": "local", "path": "./plugins/warp" }` (used in `.grok-plugin/`) and the string `"./plugins/warp"` (used in `.claude-plugin/`, matching Warp’s Claude marketplace).
 
 ## For Warp maintainers
 
-1. **Fork / transfer** this repo to `warpdotdev/grok-build-warp` (or your preferred name).
-2. Confirm `plugins/warp/plugin.json` `homepage` and README install URLs match the public repo.
-3. Point the Warp client Grok plugin installer at:
+When adopting this repo as `warpdotdev/grok-build-warp`:
+
+1. **Fork / transfer** and retarget `homepage`, `repository`, `author`, and marketplace `owner` from `nwp` to Warp.
+2. Point the Warp client Grok plugin installer at:
 
    ```bash
-   grok plugin install warpdotdev/grok-build-warp#plugins/warp --trust
+   grok plugin marketplace add warpdotdev/grok-build-warp
+   grok plugin install warp --trust
    ```
 
-   (or marketplace install once catalogued). Prefer this over writing files into `~/.grok/hooks/`.
-4. Keep **`version`** in `plugins/warp/plugin.json` in lockstep with Warp client `MINIMUM_PLUGIN_VERSION` for Grok.
-5. Run tests before release:
+   or `grok plugin install warpdotdev/grok-build-warp#plugins/warp --trust`. Prefer this over writing files into `~/.grok/hooks/`.
+3. Keep **`version`** in `plugins/warp/plugin.json` in lockstep with Warp client `MINIMUM_PLUGIN_VERSION` for Grok.
+4. Run tests before release:
 
    ```bash
    bash plugins/warp/tests/test-hooks.sh
@@ -127,6 +148,17 @@ Agent id in OSC payloads must remain **`grok`**. Product name in user-facing doc
 bash plugins/warp/tests/test-hooks.sh
 grok plugin validate plugins/warp
 
+# Dry local install
+grok plugin install ./plugins/warp --trust
+grok plugin details warp
+grok plugin list
+
+# Marketplace from this checkout
+grok plugin marketplace add .
+grok plugin list --json --available
+```
+
+```bash
 printf '%s' '{"hookEventName":"SessionStart","sessionId":"t","cwd":"/tmp"}' \
   | WARP_CLI_AGENT_PROTOCOL_VERSION=1 \
     WARP_CLIENT_VERSION=v0.2026.04.01.08.00.stable_00 \

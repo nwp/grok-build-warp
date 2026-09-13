@@ -2,7 +2,7 @@ name: Plugin Tests
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [master, main]
 
 jobs:
   plugin-tests:
@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
-      - name: Run tests
+      - name: Run hook tests
         run: |
           shopt -s globstar nullglob
           failed=0
@@ -20,3 +20,10 @@ jobs:
             bash "$f" || failed=1
           done
           exit $failed
+      - name: Install Grok CLI
+        run: curl -fsSL https://x.ai/cli/install.sh | bash
+      - name: Validate plugin
+        run: |
+          export PATH="$HOME/.grok/bin:$PATH"
+          grok --version
+          grok plugin validate plugins/warp
